@@ -1,0 +1,46 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Channel Info</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 2rem;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: #fff;
+            padding: 2rem;
+            max-width: 600px;
+            margin: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        p {
+            font-size: 1.2rem;
+            color: #555;
+        }
+        strong {
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Channel Information</h1>
+        <p><strong>temp amb:</strong> {{ channel_name }}</p>
+        <p><strong>temp corps:</strong> {{ channel_age }}</p>
+        <p><strong>timestamp:</strong> {{ channel_sexe }}</p>
+        <p><strong>channel_tempamb:</strong> {{ channel_tempamb }}</p>
+        <p><strong>channel_tempcorps:</strong> {{ channel_tempcor }}</p>
+        <p><strong>channel_spo:</strong> {{ channel_spo2 }}</p>
+
+    </div>
+</body>
+</html>

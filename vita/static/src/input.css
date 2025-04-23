@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+@tailwind utilities;
+
+@config "../../tailwind.config.js";
+@import "flowbite/src/themes/default";
+@plugin "flowbite/plugin";
+@source "../../node_modules/flowbite";
+
+
+/* /vitaApp/tailwind.config.js */

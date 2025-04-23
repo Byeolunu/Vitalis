@@ -1,0 +1,70 @@
+{% load compress %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        if (localStorage.getItem('theme') === 'dark') {
+          document.documentElement.classList.add('dark');
+        }
+    </script>
+    {% compress css %}
+    <link href="{% static 'src/output.css' %}" rel="stylesheet">
+    {% endcompress %}
+    <title>Dashboard</title>
+</head>
+<body class="font-body cursor-m bg-gray-100 ">
+    <header class="bg-red py-4 px-6">
+        <div class="flex items-center justify-between flex-wrap gap-10 h-20">
+            <div class="flex items-center space-x-3">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQpUp4vptPR_Pfoe5YGzgocW-uXsje8iosag&s" class="w-8 h-8 rounded-full" alt="Nouhaila Mouftah">
+                <h1 class="text-lg text-white font-bold">Vitalis</h1>
+            </div>
+
+            <nav id="desk" class="hidden items-center md:flex space-x-4 text-white">
+                <a href="index.html" class="hover:text-gray-400">Dashboard</a>
+                <a href="gestion.html" class="hover:text-gray-400">Talk To AI</a>
+                <a href="#profile" class="hover:text-gray-400">Profile</a>
+                
+            </nav>
+
+            <button id="burger-button" class="md:hidden text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-8 h-8">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+
+        </div>
+        <div id="mobile-menu" class="hidden bg-darkblue text-white mt-2 md:hidden">
+            <a href="index.html" class="block px-4 py-2">Dashboard</a>
+            <a href="gestion.html" class="block px-4 py-2">Talk To AI</a>
+            <a href="#profile" class="block px-4 py-2">Profile</a>
+        </div>
+    </header>
+    <section class="flex flex-col items-center justify-center h-screen">
+        <h2 class="text-2xl font-bold mb-4">Form</h2>
+        <div class="w-full">
+            <form method="post" >
+                {% csrf_token %}
+                {{ form.as_p }}
+                
+                    {% for field, error in errors.items %}
+                        <p style="color: red;">{{ field }}: {{ error }}</p>
+                    {% endfor %}
+                    
+                <div class="flex justify-center mt-4">
+                    <button type="submit" class="bg-red text-white px-4 py-2 rounded">
+                        Submit
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+    
+</body>
+</html> 
+
+
