@@ -16,7 +16,7 @@ import numpy as np
 
 
 ollama_client = Client()
-client_sound = ElevenLabs(api_key="sk_9d8240a9cb07e26c7417e02caddd689cc52419ffc18a970f")
+client_sound = ElevenLabs(api_key="YOUR_API_KEY")
 
 
 def calculer_temperature_corporelle(valeurs_capteur):
@@ -115,16 +115,7 @@ def transcribe_audio(audio_file):
 
 
 
-# def get_llm_response(prompt):
-#     if not prompt:
-#         return {'error': 'No input provided'}
 
-#     response = ollama_client.chat(
-#         model='vitalis_Q4_K_M',
-#         messages=[{'role': 'user', 'content': prompt}]
-#     )
-
-#     return response['message']['content']
 
 def get_llm_response(prompt, user_id=None):
     if not prompt:
