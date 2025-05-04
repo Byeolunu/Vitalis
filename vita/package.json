@@ -2,9 +2,6 @@
   "name": "vita",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -15,5 +12,8 @@
   },
   "dependencies": {
     "flowbite": "^3.1.2"
+  },
+  "scripts" : {
+        "watch:css" : "npx @tailwindcss/cli -i ./src/input.css -o ./src/output.css --watch"
   }
 }

@@ -16,7 +16,7 @@ import numpy as np
 
 
 ollama_client = Client()
-client_sound = ElevenLabs(api_key="sk_d9d732a1fe5bb6e9111afecbbfb3a20cdb5134793b65b4a8")
+client_sound = ElevenLabs(api_key="sk_9d8240a9cb07e26c7417e02caddd689cc52419ffc18a970f")
 
 
 def calculer_temperature_corporelle(valeurs_capteur):
@@ -216,7 +216,15 @@ def predict(request):
     return JsonResponse({'error': 'Invalid method'}, status=405)
 
 def index(request):
-    return render(request, 'index.html')
+    return render(request, 'final_index.html')
+
+def welcome(request):
+    user = request.user  # Assuming user is authenticated and has an ID
+    if user.is_authenticated:
+        return redirect('home', user_id=user.id)  # Redirecting with user_id
+    else:
+        return redirect('index')  # or handle unauthenticated users
+
 # def heart_rate_view(request):
 #     ref = db.reference('vitalis-1')
 #     data = ref.get()
@@ -246,8 +254,8 @@ def user_register(request, pk=None):
         form = UserForm(request.POST, instance=user)
         if form.is_valid():
             print("Form is valid. Redirecting to homepage...")
-            form.save()
-            return redirect('home')
+            user = form.save()  # Save the form and get the user object
+            return redirect('home', user_id=user.id)  # Redirect to home with user_id
         else:
             print("Form is invalid:", form.errors)
     else:
@@ -261,7 +269,7 @@ config={
        'authDomain': "vitalis-1.firebaseapp.com",
        'databaseURL': "https://vitalis-1-default-rtdb.firebaseio.com",
         'projectId': "vitalis-1",
-        'storageBucket': "vitalis-1.firebasestorage.app",
+        'storageBucket': "vitalis-1.firebasestorage.com",
         'messagingSenderId': "150195650266",
         'appId': "1:150195650266:web:e836be50305ff8de28afe3",
 }
@@ -270,11 +278,14 @@ firebase = pyrebase.initialize_app(config)
 authe=firebase.auth()
 database=firebase.database()
 
+def progress(request):
+    return render(request, 'progress.html')
 
 def index1(request):
     channel_name=database.child("data").child("temperature_ambiante").get().val()
     channel_age=database.child("data").child("temperature_corporelle").get().val()
     channel_sexe=database.child("data").child("timestamp").get().val()
+
     channel_tempamb=database.child("datas").child("valeur").child("temperature_ambiante").get().val()
     channel_tempcor=database.child("datas").child("valeur").child("temperature_corporelle").get().val()
     channel_spo=database.child("datas").child("valeur").child("spo2").get().val()
@@ -318,9 +329,83 @@ def user_edit(request, user_id):
 
 from vitaApp.models import User 
 
+
+
+
+
+
+################################"
+import threading
+import time
+import numpy as np
+from scipy.signal import find_peaks
+from firebase_admin import db
+from .models import User
+from django.shortcuts import get_object_or_404
+
+# Global metrics cache
+firebase_metrics = {
+    'temperature': [],
+    'bpm': [],
+    'spo2': [],
+    'systolic': [],
+    'diastolic': [],
+    'fatigue': None,
+    'hrv': None
+}
+
+def collect_firebase_data_for_30_seconds():
+    firebase_metrics = {}
+
+    temperature_values = []
+    ir_values = []
+    red_values = []
+    spo2 = []
+
+    start = time.time()
+    while time.time() - start < 30:
+        try:
+            data = database.child('datats/valeur').get().val()
+            if data:
+                temp = data.get('temperature_corporelle')
+                ir = data.get('ir')
+                red = data.get('red')
+                spo = data.get('spo2')
+
+                if temp: temperature_values.append(float(temp))
+                if ir: ir_values.append(float(ir))
+                if red: red_values.append(float(red))
+                if spo: spo2.append(float(spo))
+
+        except Exception as e:
+            print("Error fetching from Firebase:", e)
+
+        time.sleep(0.01)
+
+    # Stockage des valeurs brutes
+    firebase_metrics['temperature_raw'] = temperature_values
+    firebase_metrics['bpm_raw'] = ir_values
+    firebase_metrics['spo2_raw'] = spo2
+    firebase_metrics['systolic_raw'] = red_values
+
+    # Calculs
+    firebase_metrics['temperature'] = calculer_temperature_corporelle(temperature_values)
+    peaks, _ = find_peaks(ir_values, distance=50)
+    firebase_metrics['bpm'] = calculer_bpm(ir_values)
+    firebase_metrics['systolic'], firebase_metrics['diastolic'] = estimer_tension_art(peaks)
+    firebase_metrics['fatigue'], firebase_metrics['hrv'] = estimer_fatigue(peaks)
+    firebase_metrics['spo2'] = calculer_spo2(ir_values, red_values)
+
+    return firebase_metrics
+
+
+def start_collection_thread():
+    thread = threading.Thread(target=collect_firebase_data_for_30_seconds)
+    thread.start()
+
 def build_user_context(user_id):
     user = get_object_or_404(User, id=user_id)
-    age = user.get_age() 
+    age = user.get_age()
 
     context = f"""
     User Profile:
@@ -331,4 +416,144 @@ def build_user_context(user_id):
     - Weight: {user.weight} kg
     """
 
+    if firebase_metrics['temperature']:
+        temp_avg = calculer_temperature_corporelle(firebase_metrics['temperature'])
+        context += f"\n- Average Body Temp (30s): {temp_avg}°C"
+    if firebase_metrics['bpm']:
+        context += f"\n- Heart Rate: {firebase_metrics['bpm']} bpm"
+    if firebase_metrics['spo2']:
+        context += f"\n- SpO2: {firebase_metrics['spo2']}%"
+    if firebase_metrics['systolic'] and firebase_metrics['diastolic']:
+        context += f"\n- Blood Pressure: {firebase_metrics['systolic']}/{firebase_metrics['diastolic']} mmHg"
+    if firebase_metrics['fatigue']:
+        context += f"\n- Fatigue Level: {firebase_metrics['fatigue']} (HRV: {firebase_metrics['hrv']} ms)"
+
     return context.strip()
+
+# def render_health_metrics(request):
+#     # Récupérer les données de Firebase
+#     firebase_metrics = collect_firebase_data_for_30_seconds()
+#
+#     # Extraction des valeurs nécessaires
+#     ir_values = firebase_metrics['bpm']
+#     red_values = firebase_metrics['systolic']
+#     temperature_values = firebase_metrics['temperature']
+#     spo2 = firebase_metrics['spo2']
+#
+#     # Calculs
+#     bpm = calculer_bpm(ir_values)
+#     peaks, _ = find_peaks(ir_values, distance=100*0.5)
+#     systolic, diastolic = estimer_tension_art(peaks)
+#     niveau_fatigue, hrv = estimer_fatigue(peaks)
+#     temp_avg = calculer_temperature_corporelle(temperature_values)
+#
+#     # Préparer le contexte pour le template
+#     context = {
+#         'bpm': bpm,
+#         'spo2': spo2,
+#         'systolic': systolic,
+#         'diastolic': diastolic,
+#         'niveau_fatigue': niveau_fatigue,
+#         'hrv': hrv,
+#         'temperature': temp_avg,
+#     }
+#
+#     return render(request, 'homePage.html', context)
+
+# def data(request):
+#     firebase_metrics = collect_firebase_data_for_30_seconds()
+#
+#     return render(request, 'data.html', {'firebase_metrics': firebase_metrics})
+
+
+# def get_metrics_data(request):
+#     # Refresh data before serving
+#     collect_firebase_data_for_30_seconds()
+#
+#     def convert_to_float(data_list):
+#         return [float(item) if isinstance(item, (int, float, str)) else 0 for item in data_list]
+#
+#     data['temperature'] = convert_to_float(data['temperature'])
+#     data['bpm'] = convert_to_float(data['bpm'])
+#     data['spo2'] = convert_to_float(data['spo2'])
+#     data['fatigue'] = convert_to_float(data['fatigue'])
+#
+#     return JsonResponse(data)
+
+
+# def metrics_data(request):
+#     firebase_metrics = collect_firebase_data_for_30_seconds()
+#
+#     # Créer des labels temporels fictifs (ou à partir du timestamp)
+#     labels = [str(i) for i in range(len(firebase_metrics.get('temperature_raw', [])))]
+#
+#     return JsonResponse({
+#         "temperature": firebase_metrics.get("temperature_raw", []),
+#         "bpm": firebase_metrics.get("bpm_raw", []),
+#         "spo2": firebase_metrics.get("spo2_raw", []),
+#         "fatigue": [firebase_metrics.get("fatigue", 0)] * len(labels),  # si une seule valeur
+#         "labels": labels
+#     })
+#
+
+import numpy as np
+from scipy.signal import find_peaks
+
+def moyenne(liste):
+    return round(sum(liste) / len(liste), 2) if liste else 0
+
+def calculer_spo2(ir_values, red_values):
+    if not ir_values or not red_values:
+        return 0
+    try:
+        ac_ir = max(ir_values) - min(ir_values)
+        dc_ir = sum(ir_values) / len(ir_values)
+        ac_red = max(red_values) - min(red_values)
+        dc_red = sum(red_values) / len(red_values)
+
+        r = (ac_red / dc_red) / (ac_ir / dc_ir)
+        spo2 = 110 - 25 * r
+        return round(spo2, 2)
+    except:
+        return 0
+
+def calculer_bpm(ir_values):
+    peaks, _ = find_peaks(ir_values, distance=50)
+    if len(peaks) < 2:
+        return 0
+    intervals = np.diff(peaks) * 0.01  # 0.01s entre deux mesures
+    bpm = 60 / np.mean(intervals)
+    return round(bpm, 2)
+
+def estimer_tension(bpm):
+    systolic = 0.5 * bpm + 80
+    diastolic = 0.3 * bpm + 40
+    return round(systolic), round(diastolic)
+
+def data(request):
+    firebase_metrics = collect_firebase_data_for_30_seconds()
+
+    ir_values = firebase_metrics.get('bpm_raw', [])
+    red_values = firebase_metrics.get('systolic_raw', [])
+    temp_values = firebase_metrics.get('temperature_raw', [])
+    spo2_values = firebase_metrics.get('spo2_raw', [])
+
+    # Calculs selon les capteurs
+    bpm = calculer_bpm(ir_values)
+    spo2 = calculer_spo2(ir_values, red_values)
+    temperature = moyenne(temp_values)
+    systolic, diastolic = estimer_tension(bpm)
+
+    moyennes = {
+        'temperature_moyenne': temperature,
+        'bpm_moyen': bpm,
+        'spo2_moyen': spo2,
+        'tension_systolique': systolic,
+        'tension_diastolique': diastolic,
+        'niveau_fatigue': firebase_metrics.get('fatigue', 'Inconnu')
+    }
+
+    return render(request, 'data.html', {
+        'firebase_metrics': firebase_metrics,
+        'moyennes': moyennes
+    })

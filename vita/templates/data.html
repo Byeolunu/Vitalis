@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Données Vitales</title>
+</head>
+<body>
+    <h1>Données collectées pendant 30 secondes</h1>
+    <ul>
+        {% for key, value in firebase_metrics.items %}
+            {% if key == "temperature_raw" or key == "bpm_raw" or key == "spo2_raw" or key == "systolic_raw" %}
+                <li><strong>{{ key|capfirst }} :</strong> {{ value }}</li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+
+<h2>Résultats estimés :</h2>
+<ul>
+    <li><strong>Température moyenne :</strong> {{ moyennes.temperature_moyenne }} °C</li>
+    <li><strong>BPM :</strong> {{ moyennes.bpm_moyen }}</li>
+    <li><strong>SpO2 :</strong> {{ moyennes.spo2_moyen }} %</li>
+    <li><strong>Tension artérielle :</strong> {{ moyennes.tension_systolique }}/{{ moyennes.tension_diastolique }} mmHg</li>
+{#    <li><strong>Niveau de fatigue :</strong> {{ moyennes.niveau_fatigue }}</li>#}
+</ul>
+
+</body>
+</html>

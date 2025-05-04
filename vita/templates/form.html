@@ -1,70 +1,192 @@
 {% load compress %}
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        if (localStorage.getItem('theme') === 'dark') {
-          document.documentElement.classList.add('dark');
-        }
-    </script>
-    {% compress css %}
+    <title>Vitalis - Votre partenaire santé</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap" rel="stylesheet">
     <link href="{% static 'src/output.css' %}" rel="stylesheet">
-    {% endcompress %}
-    <title>Dashboard</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #0a0803;
+        }
+
+        /* Couleurs du thème */
+        :root {
+            --primary-red: #bd2c49;
+            --secondary-blue: #5e89ab;
+            --light-gray: #f5f5f5;
+        }
+
+        .hero-section {
+            background-image: url('/api/placeholder/1920/1080');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(175, 194, 204, 0.7));
+            z-index: 1;
+        }
+
+        /* Style des inputs */
+        input, select, textarea {
+            @apply px-4 py-2 border-2 border-[#bd2c49] rounded-lg focus:ring-2 focus:ring-[#5e89ab] focus:border-[#5e89ab] transition duration-200;
+            background-color: var(--light-gray);
+        }
+
+        /* Style des labels */
+        .form-label {
+            @apply block text-[#0a0803] text-sm font-medium mb-2;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+
+        /* Grille du formulaire */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 1.5rem;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Version mobile */
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+
+            .form-label {
+                margin-bottom: 0.25rem;
+            }
+        }
+
+        /* Bouton principal */
+        .btn-primary {
+            @apply transition duration-300 transform hover:-translate-y-1;
+        }
+    </style>
 </head>
-<body class="font-body cursor-m bg-gray-100 ">
-    <header class="bg-red py-4 px-6">
-        <div class="flex items-center justify-between flex-wrap gap-10 h-20">
-            <div class="flex items-center space-x-3">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQpUp4vptPR_Pfoe5YGzgocW-uXsje8iosag&s" class="w-8 h-8 rounded-full" alt="Nouhaila Mouftah">
-                <h1 class="text-lg text-white font-bold">Vitalis</h1>
-            </div>
+<body class="min-h-screen bg-gray-100">
+    <!-- Barre de navigation -->
+<nav class=" shadow-md bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex-shrink-0 flex items-center">
+                    <img src="{% static '../static/images/logo.jpg' %}" alt="Logo Vitalis" class="h-16 w-auto">
+                    <div class=" text-3xl font-light" style="font-family: Pixelify"><span class="text-[#bd2c49] text-4xl">V</span>italis</div>
+                </div>
 
-            <nav id="desk" class="hidden items-center md:flex space-x-4 text-white">
-                <a href="index.html" class="hover:text-gray-400">Dashboard</a>
-                <a href="gestion.html" class="hover:text-gray-400">Talk To AI</a>
-                <a href="#profile" class="hover:text-gray-400">Profile</a>
-                
-            </nav>
+                <!-- Navigation desktop -->
+                <div class="hidden text-red md:flex items-center  gap-20 mx-4">
+                    <a href="#acceuil" class="text-[#bd2c49] text-center hover:text-[#5e89ab]  font-medium">À propos</a>
+                    <a href="#services" class="text-[#bd2c49] text-center hover:text-[#5e89ab]  font-medium">Services</a>
+                    <a href="#contact" class="text-[#bd2c49] text-center hover:text-[#5e89ab]  font-medium">Contact</a>
+                </div>
 
-            <button id="burger-button" class="md:hidden text-white">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-8 h-8">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                </svg>
-            </button>
-
-        </div>
-        <div id="mobile-menu" class="hidden bg-darkblue text-white mt-2 md:hidden">
-            <a href="index.html" class="block px-4 py-2">Dashboard</a>
-            <a href="gestion.html" class="block px-4 py-2">Talk To AI</a>
-            <a href="#profile" class="block px-4 py-2">Profile</a>
-        </div>
-    </header>
-    <section class="flex flex-col items-center justify-center h-screen">
-        <h2 class="text-2xl font-bold mb-4">Form</h2>
-        <div class="w-full">
-            <form method="post" >
-                {% csrf_token %}
-                {{ form.as_p }}
-                
-                    {% for field, error in errors.items %}
-                        <p style="color: red;">{{ field }}: {{ error }}</p>
-                    {% endfor %}
-                    
-                <div class="flex justify-center mt-4">
-                    <button type="submit" class="bg-red text-white px-4 py-2 rounded">
-                        Submit
+                <!-- Menu burger mobile -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-button" class="text-[#0a0803] hover:text--[#5e89ab] focus:outline-none">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
                     </button>
                 </div>
-            </form>
+            </div>
+        </div>
+
+        <!-- Menu mobile -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-[#0a0803] hover:bg--[#afc2cc] hover:text--[#5e89ab]">Accueil</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-[#0a0803] hover:bg--[#afc2cc] hover:text--[#5e89ab]">À propos</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-[#0a0803] hover:bg--[#afc2cc] hover:text--[#5e89ab]">Services</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-[#0a0803] hover:bg--[#afc2cc] hover:text--[#5e89ab]">Contact</a>
+            </div>
+        </div>
+    </nav>
+    <!-- Section du formulaire -->
+    <section class="flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] py-12 px-4 sm:px-6 lg:px-8">
+        <div class="w-full max-w-2xl">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-[#bd2c49] mb-2">Formulaire d'inscription</h2>
+                <p class="text-gray-600">Rejoignez notre communauté santé</p>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden p-8 sm:p-10">
+                <form method="post" class="space-y-6">
+                    {% csrf_token %}
+
+                    <div class="space-y-6">
+                        {% for field in form %}
+                            <div class="form-grid">
+                                <label class="form-label">
+                                    {{ field.label_tag }}
+                                    {% if field.field.required %}<span class="text-red-500 ml-1">*</span>{% endif %}
+                                </label>
+                                <div class="flex flex-col">
+                                    {{ field }}
+                                    {% if field.help_text %}
+                                        <p class="mt-1 text-xs text-gray-500">{{ field.help_text }}</p>
+                                    {% endif %}
+                                    {% if field.errors %}
+                                        <p class="text-red-600 text-sm mt-1">{{ field.errors.as_text }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    {% if errors %}
+                        <div class="bg-red-50 border-l-4 border-red-500 p-4 mt-6">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <h3 class="text-sm font-medium text-red-800">Erreurs dans le formulaire</h3>
+                                    <div class="mt-2 text-sm text-red-700">
+                                        {% for field, error in errors.items %}
+                                            <p><strong>{{ field }}:</strong> {{ error }}</p>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="pt-6">
+                        <button type="submit" class="w-full btn-primary bg-[#bd2c49] hover:bg-[#5e89ab] text-white font-medium px-6 py-3 rounded-full shadow-md hover:shadow-lg">
+                            Envoyer
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </section>
-    
+
+    <script>
+        // Gestion du menu mobile
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+    </script>
 </body>
-</html> 
-
-
+</html>

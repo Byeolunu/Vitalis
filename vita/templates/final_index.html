@@ -1,0 +1,281 @@
+{% load compress %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vitalis - Votre partenaire santé</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap" rel="stylesheet">
+    <link href="{% static 'src/output.css' %}" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #0a0803;
+        }
+
+        .hero-section {
+            background-image: url('/api/placeholder/1920/1080');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(175, 194, 204, 0.7));
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .medical-container {
+            animation: pulse-gentle 4s infinite ease-in-out;
+        }
+
+        @keyframes pulse-gentle {
+            0%, 100% { box-shadow: 0 0 20px 0 rgba(59, 130, 246, 0.3); }
+            50% { box-shadow: 0 0 30px 5px rgba(59, 130, 246, 0.4); }
+        }
+
+        .heartbeat-line {
+            animation: slide-right 12s infinite linear;
+        }
+
+        @keyframes slide-right {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        @keyframes gentle-pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.5; }
+        }
+
+        .stethoscope, .medical-cross {
+            animation: gentle-pulse 6s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-100">
+    <!-- Navbar responsive -->
+    <nav class=" shadow-md bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex-shrink-0 flex items-center">
+                    <img src="{% static '../static/images/logo.jpg' %}" alt="Logo Vitalis" class="h-16 w-auto">
+                    <div class=" text-3xl font-light" style="font-family: Pixelify"><span class="text-[#bd2c49] text-4xl">V</span>italis</div>
+                </div>
+                
+                <!-- Navigation desktop -->
+                <div class="hidden text-red md:flex items-center  gap-20 mx-4">
+                    <a href="#acceuil" class="text-[#bd2c49] text-center hover:text-[#5e89ab]  font-medium">À propos</a>
+                    <a href="#services" class="text-[#bd2c49] text-center hover:text-[#5e89ab]  font-medium">Services</a>
+                    <a href="#contact" class="text-[#bd2c49] text-center hover:text-[#5e89ab]  font-medium">Contact</a>
+                </div>
+                
+                <!-- Menu burger mobile -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-button" class="text-[#0a0803] hover:text--[#5e89ab] focus:outline-none">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Menu mobile -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-[#0a0803] hover:bg--[#afc2cc] hover:text--[#5e89ab]">Accueil</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-[#0a0803] hover:bg--[#afc2cc] hover:text--[#5e89ab]">À propos</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-[#0a0803] hover:bg--[#afc2cc] hover:text--[#5e89ab]">Services</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-[#0a0803] hover:bg--[#afc2cc] hover:text--[#5e89ab]">Contact</a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Section principale avec design circulaire -->
+    <main class="pt-12 ">
+        <div class="max-w-7xl mx-auto">
+            <!-- Section circulaire centrale -->
+            <div id="acceuil" class="hero-section min-h-screen pt-16 pb-16 flex items-center">
+                <div class="hero-content w-full">
+                    <div class=" sm:px-6 lg:px-8">
+                        <div class="flex flex-col md:flex-row items-center justify-between">
+                            <!-- Contenu à gauche -->
+                            <div class="w-full md:w-1/2 mb-12 md:mb-0">
+                                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-red mb-6">Prenez soin de vous avec Vitalis</h1>
+                                <p class="text-lg text-text mb-8">Notre approche personnalisée met votre santé au centre de nos préoccupations. Découvrez comment nous pouvons vous aider à atteindre un bien-être optimal.</p>
+                                <div class="flex flex-wrap gap-4">
+                                    <a href="#services" class="bg-red hover:bg-opacity-80 text-white font-medium py-3 px-8 rounded-full transition duration-300 shadow-md">Nos services</a>
+                                    <a href="#contact" class="bg-blue-900 hover:bg-opacity-80 text-white font-medium py-3 px-8 rounded-full transition duration-300 shadow-md">Nous contacter</a>
+                                </div>
+                            </div>
+
+                            <!-- Cercle 3D à droite -->
+                            <div class="w-full md:w-1/2 flex justify-center">
+                                <div class="medical-container w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 flex flex-col items-center justify-center p-8 relative overflow-hidden bg-gradient-to-br from-blue-100 to-blue-50 shadow-xl rounded-lg border-2 border-blue-200">
+                                    <!-- Symbole médical en arrière-plan -->
+                                    <div class="absolute inset-0 flex items-center justify-center opacity-5">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-4/5 h-4/5 text-blue-600 fill-current">
+                                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"></path>
+                                            <path d="M11 7h2v10h-2zm-2 5h6v-2H9z"></path>
+                                        </svg>
+                                    </div>
+
+                                    <!-- Éléments graphiques médicaux -->
+                                    <div class="heartbeat-line absolute top-6 left-0 right-0 h-6 flex items-center justify-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 20" class="w-3/4 h-full">
+                                            <path d="M0,10 L20,10 L25,2 L35,18 L45,2 L55,18 L65,10 L200,10" stroke="#3B82F6" stroke-width="2" fill="none"></path>
+                                        </svg>
+                                    </div>
+
+                                    <div class="stethoscope absolute bottom-6 right-6 w-12 h-12 text-blue-500 opacity-30">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M19 12c0-3.87-3.13-7-7-7s-7 3.13-7 7"></path>
+                                            <path d="M19 12v3.5c0 1.38-1.12 2.5-2.5 2.5S14 16.88 14 15.5V12"></path>
+                                            <path d="M5 12v1.5C5 14.88 5.12 16 5.5 16"></path>
+                                            <path d="M8 16h0c1.1 0 2-.9 2-2v-2H5v2c0 1.1.9 2 2 2z"></path>
+                                        </svg>
+                                    </div>
+
+                                    <div class="medical-cross absolute top-6 left-6 text-red-500 opacity-30">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-8 h-8" fill="currentColor">
+                                            <path d="M9 3v7H2v4h7v7h4v-7h7v-4h-7V3z"></path>
+                                        </svg>
+                                    </div>
+
+                                    <!-- Contenu principal avec animation subtile -->
+                                    <div class="relative z-10 bg-white bg-opacity-80 p-6 rounded-lg shadow-md transform hover:scale-102 transition-all duration-300 border border-blue-100">
+                                        <p class="text-center text-xl text-blue-900 font-medium mb-6">Lancer votre Diagnostique en Seulement 30s</p>
+                                        <a href="{% url 'user_register' %}" class="bg-red-700 text-white font-medium py-2 px-6 rounded-full transition duration-300 shadow-md flex items-center justify-center hover:shadow-2xl">
+                                            <span>Commencer maintenant </span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                            </svg>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+            
+            <!-- Section d'introduction -->
+            <section id="services" class="bg-gray-50 py-16">
+                <div class="container mx-auto px-4">
+                    <div class="text-center mb-12">
+                        <h2 class="text-5xl font-bold text-red-800 mt-10 mb-24">Nos Services</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 ">
+                        <!-- Dashboard Service -->
+                        <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300">
+                            <div class="p-6  mt-20">
+                                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold text-blue-800 text-center mb-2">Dashboard Patient</h3>
+                                <p class="text-gray-600 text-center mb-4">Accédez à un tableau de bord  pour afficher l'état de votre santé en temps réel.</p>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300">
+                            <div class="p-6  mt-20">
+                                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold text-blue-800 text-center mb-2">Consultations</h3>
+                                <p class="text-gray-600 text-center mb-4">Accédez à vos consultations médicales facilement et efficacement.</p>
+                            </div>
+                        </div>
+
+
+                        <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition-all duration-300">
+                            <div class="p-6  mt-20">
+                                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold text-blue-800 text-center mb-2">AI Assistant Médical</h3>
+                                <p class="text-gray-600 text-center mb-4">Bénéficiez d'un assistant médical intelligent alimenté par l'intelligence artificielle.</p>
+                            </div>
+                        </div>
+
+
+
+
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <!-- Pied de page -->
+        <footer id="contact" class="bg-red-800 text-white py-8" style="font-family: 'High Tower Text'">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-14 ml-30">
+                <div>
+                    <h4 class="font-head text-2xl text-blue-950 font-bold mb-4" style="font-family: Pixelify">Vitalis</h4>
+                    <p class="text--[#afc2cc]">ENSAM CASABLANCA - UH2C</p>
+                </div>
+                <div>
+                    <h4 class="font-head text-2xl text-blue-950 font-bold mb-4"  style="font-family: Pixelify">Contact</h4>
+                    <p class="text--[#afc2cc]">Email: vitalis@gmail.com</p>
+                    <p class="text--[#afc2cc]">Tél: +212 615599738</p>
+                </div>
+                <div>
+                    <div class="flex gap-6">
+                        <a href="#" class="text-blue-950 hover:text-white">
+                            <span class="sr-only">Facebook</span>
+                            <svg class="h-8 w-8" fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd"></path>
+                            </svg>
+                        </a>
+                        <a href="#" class="text-blue-950 hover:text-white">
+                            <span class="sr-only">Instagram</span>
+                            <svg class="h-8 w-8" fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465.668.25 1.272.644 1.772 1.153.51.5.902 1.104 1.153 1.772.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772c-.5.5-1.104.902-1.772 1.153-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clip-rule="evenodd"></path>
+                            </svg>
+                        </a>
+                        <a href="#" class="text-blue-950 hover:text-white">
+                            <span class="sr-only">Twitter</span>
+                            <svg class="h-8 w-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                              <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-8 border-t border--[#afc2cc] pt-8 text-center">
+                <p class="text--[#afc2cc]">&copy; 2025 Vitalis. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Script pour le menu mobile -->
+    <script>
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>

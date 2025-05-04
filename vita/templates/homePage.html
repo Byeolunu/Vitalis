@@ -1,286 +1,236 @@
 {% load compress %}
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        if (localStorage.getItem('theme') === 'dark') {
-          document.documentElement.classList.add('dark');
-        }
-    </script>
-    {% compress css %}
+    <title>Vitalis - Votre partenaire santé</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans&display=swap" rel="stylesheet">
     <link href="{% static 'src/output.css' %}" rel="stylesheet">
-    {% endcompress %}
-    <title>Dashboard</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #0a0803;
+        }
+
+        .hero-section {
+            background-image: url('/api/placeholder/1920/1080');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(175, 194, 204, 0.7));
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .medical-container {
+            animation: pulse-gentle 4s infinite ease-in-out;
+        }
+
+        @keyframes pulse-gentle {
+            0%, 100% { box-shadow: 0 0 20px 0 rgba(59, 130, 246, 0.3); }
+            50% { box-shadow: 0 0 30px 5px rgba(59, 130, 246, 0.4); }
+        }
+
+        .heartbeat-line {
+            animation: slide-right 12s infinite linear;
+        }
+
+        @keyframes slide-right {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        @keyframes gentle-pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.5; }
+        }
+
+        .stethoscope, .medical-cross {
+            animation: gentle-pulse 6s infinite ease-in-out;
+        }
+    </style>
 </head>
-<body class="font-body cursor-m bg-gray-100 ">
-    <header class="bg-red py-4 px-6">
-        <div class="flex items-center justify-between flex-wrap gap-10 h-20">
-            <div class="flex items-center space-x-3">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQpUp4vptPR_Pfoe5YGzgocW-uXsje8iosag&s" class="w-8 h-8 rounded-full" alt="Nouhaila Mouftah">
-                <h1 class="text-lg text-white font-bold">Vitalis</h1>
+<body class="min-h-screen bg-gray-100" >
+    <!-- Navbar responsive -->
+    <nav class=" shadow-md bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex-shrink-0 flex items-center">
+                    <img src="{% static '../static/images/logo.jpg' %}" alt="Logo Vitalis" class="h-16 w-auto">
+                    <div class=" text-3xl font-light" style="font-family: Pixelify"><span class="text-[#bd2c49] text-4xl">V</span>italis</div>
+                </div>
+
+                <!-- Navigation desktop -->
+                <div class="hidden text-red md:flex items-center  gap-20 mx-4">
+                    <a href="#acceuil" class="text-[#bd2c49] text-center hover:text-[#5e89ab]  font-medium">À propos</a>
+                    <a href="#services" class="text-[#bd2c49] text-center hover:text-[#5e89ab]  font-medium">Services</a>
+                    <a href="#contact" class="text-[#bd2c49] text-center hover:text-[#5e89ab]  font-medium">Contact</a>
+                </div>
+
+                <!-- Menu burger mobile -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-button" class="text-[#0a0803] hover:text--[#5e89ab] focus:outline-none">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
             </div>
-
-            <nav id="desk" class="hidden items-center md:flex space-x-4 text-white">
-                <a href="index.html" class="hover:text-gray-400">Dashboard</a>
-                <a href="gestion.html" class="hover:text-gray-400">Talk To AI</a>
-                <a href="#profile" class="hover:text-gray-400">Profile</a>
-                
-            </nav>
-
-            <button id="burger-button" class="md:hidden text-white">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-8 h-8">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                </svg>
-            </button>
-
         </div>
-        <div id="mobile-menu" class="hidden bg-darkblue text-white mt-2 md:hidden">
-            <a href="index.html" class="block px-4 py-2">Dashboard</a>
-            <a href="gestion.html" class="block px-4 py-2">Talk To AI</a>
-            <a href="#profile" class="block px-4 py-2">Profile</a>
-        </div>
-    </header>
 
+        <!-- Menu mobile -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-[#0a0803] hover:bg--[#afc2cc] hover:text--[#5e89ab]">Accueil</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-[#0a0803] hover:bg--[#afc2cc] hover:text--[#5e89ab]">À propos</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-[#0a0803] hover:bg--[#afc2cc] hover:text--[#5e89ab]">Services</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-[#0a0803] hover:bg--[#afc2cc] hover:text--[#5e89ab]">Contact</a>
+            </div>
+        </div>
+    </nav>
+    <!-- Main Content -->
     <main>
-        <section class="bg-myimg bg-no-repeat bg-cover">
-            <div class="flex flex-col items-center justify-center h-screen  text-text">
-                <h1 class="text-7xl  mb-4 p-5 font-extrabold  whitespace-nowrap animate-typewrite">Welcome to Vitalis {{ form.FirstName.value }} </h1>
-                <a href="#projects" class="bg-darkblue text-white px-6 py-3 rounded-lg hover:bg-blue-100 transition-all duration-300 ease-in-out">Get Started</a>
-                <h3 class="text-3xl font-bold text-center mt-10">Your AI Assistant</h3>
+        <section class="bg-cover bg-no-repeat bg-myimg p-10">
+            <div class="flex flex-col items-center justify-center text-gray-900 h-screen">
+                <h1 class="text-6xl font-extrabold animate-typewrite text-center mb-4">
+                    Welcome to Vitalis
+                    <p class="text-4xl">{{ user.FirstName.upper }}</p>
+                </h1>
+                <a href="#projects" class="bg-red text-white px-6 py-3 rounded-lg hover:bg-red transition-all duration-300 ease-in-out mt-6">Get Started</a>
+                <h3 class="text-3xl font-bold mt-10">Your Healthcare AI Assistant</h3>
+                <p class="text-lg text-gray-400 mt-4">Here to assist you with your healthcare needs.</p>
             </div>
         </section>
-        <!-- une section pour les amis online -->
-        <section>
-            <div class="flex container p-5 m-5">
-                <div class="w-full md:w-[30%] flex flex-col justify-center bg-gray-200 shadow-2xl p-5 h-lvh">
-                    <h1 class="font-bold text text-3xl text-center p-5 mb-8">Your  Data:</h1>
-                    <div class="flex flex-wrap gap-5 justify-center">
-                        <div class="flex flex-col items-center w-1/2 md:w-auto">
-                            <div class="flex flex-wrap gap-5 justify-center">
-                                <div class="flex flex-col items-center w-1/2 md:w-auto">
-                                    <p>First Name :</p>
-                                    <div class="flex flex-col items-center">
-                                        <h3 class="font-body text-text p-1 rounded-xl">{{  user.FirstName }}</h3>
-                                    </div>
-                                </div>
-                                <div class="flex flex-col items-center w-1/2 md:w-auto">
-                                    
-                                    <p>Age:</p>
-                                    <div class="flex flex-col items-center">
-                                        <h3 class="font-body text-text p-1 ">{{user.get_age }}</h3>
-                                    </div>
-                                </div>
-                                
-                                <div class="flex flex-col items-center w-1/2 md:w-auto">
-                                    <p>Last Name :</p>
-                                    <div class="flex flex-col items-center">
-                                        <h3 class="font-body text-text p-1 rounded-xl">{{ user.LastName }}</h3>
-                                    </div>
-                                </div>
-                                <div class="flex flex-col items-center w-1/2 md:w-auto">
-                                    <p>Gender :</p>
-                                    <div class="flex flex-col items-center">
-                                        <h3 class="font-body text-text p-1 rounded-xl">{{ user.Gender }}</h3>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mt-4">
-                            <a href="{% url 'user_edit' user.id %}">
-                                <button class="bg-yellow-500 text-white px-4 py-2 rounded">Edit Info</button>
-                            </a>
-                        </div>
+
+        <!-- User Info Section -->
+        <section class="container mx-auto p-6 shadow-xl rounded-2xl mb-6 bg-white">
+            <fieldset class="p-6 rounded-lg">
+                <legend class="text-4xl font-extrabold text-neutral-900 mb-6 tracking-wide text-center">Your Data</legend>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+                    <div class="bg-[#afc2cc] p-6 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+                        <p class="font-bold text-white">First Name:</p>
+                        <h3 class="font-semibold text-white text-xl">{{ user.FirstName }}</h3>
+                    </div>
+
+                    <div class="bg-[#5e89ab] p-6 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+                        <p class="font-bold text-white">Last Name:</p>
+                        <h3 class="font-semibold text-white text-xl">{{ user.LastName }}</h3>
+                    </div>
+
+                    <div class="bg-[#bd2c49] p-6 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+                        <p class="font-bold text-white">Age:</p>
+                        <h3 class="font-semibold text-white text-xl">{{ user.get_age }}</h3>
+                    </div>
+
+                    <div class="bg-[#afc2cc] p-6 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+                        <p class="font-bold text-white">Gender:</p>
+                        <h3 class="font-semibold text-white text-xl">{{ user.Gender }}</h3>
                     </div>
                 </div>
-                <!-- {% if user %}
-                    <p>First Name: {{ user.FirstName }}</p>
-                    <p>Last Name: {{ user.LastName }}</p>
-                    <p>Gender: {{ user.Gender }}</p>
-                    <p>Age: {{ user.get_age }}</p>
-                {% else %}
-                    <p>No user data available.</p>
-                {% endif %} -->
 
-                <!-- une section pour les projets en cours -->
-                <div class="w-full bg-white p-5 ml-auto text-gray-500">
-                    <section class="mb-10">
-                        <h2 class="text-3xl font-bold  text-center m-10 bg-blue-100 rounded-2xl p-5">Dashboard Overview</h2>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                          <div class="bg-white p-6 rounded-lg  text-center hover:transform hover:scale-105 transition-transform duration-300 ease-in-out shadow-lg">
-                            <h3 class="text-xl font-semibold text-darkgreen mb-5">Total Tasks</h3>
-                            <p class="text-4xl font-bold text-blue-bg-blue-100">45</p>
-                          </div>
-                          <div class="bg-white p-6 rounded-lg shadow-lg text-center hover:transform hover:scale-105 transition-transform duration-300 ease-in-out">
-                            <h3 class="text-xl font-semibold text-darkgreen mb-5">Completed</h3>
-                            <p class="text-4xl font-bold text-blue-bg-blue-100">30</p>
-                          </div>
-                          <div class="bg-white p-6 rounded-lg text-center hover:transform hover:scale-105 transition-transform duration-300 ease-in-out shadow-lg">
-                            <h3 class="text-xl font-semibold text-darkgreen mb-5">Overdue</h3>
-                            <p class="text-4xl font-bold text-blue-bg-blue-100">5</p>
-                          </div>
-                        </div>
-                    <h4 class="font-bold text-darkblue text-3xl text-center mt-8">Your Tasks :</h4>
-                    <p class="text-lg text-gray-700 m-10 ml-0">Don't Forget To Complete Your tasks. Hit your limits </p>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="bg-white shadow-lg p-4 rounded-lg">
-                            <h2 class="font-bold text-lg">Revise Algebra</h2>
-                            <p class="text-gray-600">Revise Algebra and complete exercises.</p>
-                            <a href="gestion.html" class="text-blue-500 text-center hover:text-blue-200">View More</a>
-                        </div>
-                        <div class="bg-white shadow-lg p-4 rounded-lg">
-                            <h2 class="font-bold text-lg">Do Laundry</h2>
-                            <p class="text-gray-600">Do Laundry and complete it.</p>
-                            <a href="gestion.html" class="text-blue-500 text-center hover:text-blue-200">View More</a>
-                        </div>
-                        <div class="bg-white shadow-lg p-4 rounded-lg">
-                            <h2 class="font-bold text-lg">Go to Gym </h2>
-                            <p class="text-gray-600">Do Push-ups</p>
-                            <a href="gestion.html" class="text-blue-500 text-center hover:text-blue-200">View More</a>
-                        </div>
-                    </div>
-                    <a href="gestion.html" class="block text-center">
-                    <button class="bg-darkblue text-white px-4 py-2 rounded-lg hover:bg-blue-100 transition-all duration-300 ease-in-out mt-10">View More</button></a>
-                    <div class="my-6">
-                        <h2 class="font-bold text-3xl mb-4 text-center  text-darkblue  p-3">Tasks Overview :</h2>
-
-                       
-                    <!--des pie charts pour visualiser the progress-->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <canvas id="tasks-pie-chart"></canvas>
-                            </div>
-                            <div>
-                                <canvas id="tasks-bar-chart"></canvas>
-                            </div>
-                        </div>
-                        <div class="mt-4">
-                            <label for="project-status" class="mr-2">Filter by Status:</label>
-                            <select id="project-status" class="bg-white p-2 rounded-lg border-2">
-                                <option value="all">All</option >
-                                <option value="ongoing">Ongoing</option>
-                                <option value="completed">Completed</option>
-                                <option value="overdue">Overdue</option>
-                            </select>
-                        </div>
-                        <!-- une table pour afficher les projets en cours -->
-                        <table class="table-auto w-full mt-6">
-                            <thead class="bg-gray-100 border-1 tabl">
-                                <tr>
-                                    <th class="px-4 py-2">Task/Project Name</th>
-                                    <th class="px-4 py-2">Start Date</th>
-                                    <th class="px-4 py-2">End Date</th>
-                                    <th class="px-4 py-2">Progress</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="border px-4 py-2">Revise Algebra</td>
-                                    <td class="border px-4 py-2">2025-01-01</td>
-                                    <td class="border px-4 py-2">2025-06-01</td>
-                                    <td class="border px-4 py-2">70%</td>
-                                </tr>
-                                <tr>
-                                    <td class="border px-4 py-2">Do Laundry</td>
-                                    <td class="border px-4 py-2">2025-02-15</td>
-                                    <td class="border px-4 py-2">2025-05-15</td>
-                                    <td class="border px-4 py-2">50%</td>
-                                </tr>
-                                <tr>
-                                    <td class="border px-4 py-2">Go to Gym 3</td>
-                                    <td class="border px-4 py-2">2025-03-01</td>
-                                    <td class="border px-4 py-2">2025-04-30</td>
-                                    <td class="border px-4 py-2">80%</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <h1 class="text-4xl font-extrabold">Voice Interaction with AI</h1>
-                        <button id="startRecording">Start Recording</button>
-                        <button id="stopRecording" disabled>Stop Recording</button>
-
-
-                        <div id="chatBox"></div>
-
-                        <div id="textInputSection">
-                            <input type="text" id="textMessage" placeholder="Type a message..." />
-                            <button id="sendMessage">Send</button>
-                         </div>
-                    </div>
+                <div class="text-center mt-6">
+                    <a href="{% url 'user_edit' user.id %}" class="inline-block bg-[#bd2c49] text-white px-4 py-2 rounded shadow hover:bg-[#a6243a] transition">Edit Info</a>
                 </div>
-                
-            </div>
+            </fieldset>
         </section>
-        
+        <div class="bg-white p-6 rounded-xl shadow-md max-w-4xl mx-auto mt-10 mb-20 h-full">
+    <h2 class="text-xl font-bold mb-4 text-center ">Bracelet Data</h2>
+    <ul class="space-y-3 text-gray-800">
+        <li><strong>Température moyenne :</strong> {{ moyennes.temperature_moyenne }} °C</li>
+        <li><strong>BPM :</strong> {{ moyennes.bpm_moyen }}</li>
+        <li><strong>SpO2 :</strong> {{ moyennes.spo2_moyen }} %</li>
+        <li><strong>Tension artérielle :</strong> {{ moyennes.tension_systolique }}/{{ moyennes.tension_diastolique }} mmHg</li>
+        <li><strong>Niveau de fatigue :</strong> {{ moyennes.niveau_fatigue }}</li>
+    </ul>
+</div>
+
+
+        <!-- Charts Section -->
+        <section class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+            <!-- Temperature -->
+            <div class="bg-white shadow-xl rounded-2xl p-6">
+                <h2 class="text-xl font-semibold mb-4">Temperature 🌡️</h2>
+                <div class="chart-container">
+                    <canvas id="tempChart"></canvas>
+                </div>
+            </div>
+
+            <!-- BPM -->
+            <div class="bg-white shadow-xl rounded-2xl p-6">
+                <h2 class="text-xl font-semibold mb-4">Heart Rate ❤️</h2>
+                <canvas id="bpmChart"></canvas>
+            </div>
+
+            <!-- SpO2 -->
+            
+            
+        </section>
+
     </main>
-    <footer class="bg-darkblue text-white p-10 mt-10">
-        <div class="container mx-auto text-center">
-            <p>&copy; 2023 WorkTogetha. All rights reserved.</p>
+    <div class="flex justify-center items-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+    <h1 class="text-2xl font-bold mb-6 text-center">Voice Interaction with AI</h1>
+    <button id="startRecording" class="bg-green-500 text-white px-6 py-3 rounded-lg">Start Recording</button>
+    <button id="stopRecording" class="bg-red-500 text-white px-6 py-3 rounded-lg disabled:opacity-50" disabled>Stop Recording</button>
+
+
+    <div id="chatBox" class="mt-4"></div>
+
+    <div id="textInputSection" class="mt-4">
+        <input type="text" id="textMessage" class="border p-2 rounded-md w-full" placeholder="Type a message..." />
+        <button class="bg-blue-500 text-white px-4 py-2 rounded-lg mt-2" id="sendMessage">Send</button>
+    </div>
+    </div></div>
+
+
+    <!-- Footer Section -->
+    <footer class="bg-red text-white p-6 mt-10">
+        <div class="text-center">
+            <p>&copy; 2025 Vitalis. All rights reserved.</p>
         </div>
     </footer>
-    <script>
-        const projectData = {
-            tasks: {
-                completed: 10,
-                pending: 5,
-                overdue: 2,
-            },
-            progress: [70, 50, 80],
-        };
+    </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-        const ctx1 = document.getElementById('tasks-pie-chart').getContext('2d');
-        new Chart(ctx1, {
-            type: 'pie',
-            data: {
-                labels: ['Completed', 'Pending', 'Overdue'],
-                datasets: [{
-                    data: [projectData.tasks.completed, projectData.tasks.pending, projectData.tasks.overdue],
-                    backgroundColor: ['#4CAF50', '#FFC107', '#F44336'],
-                }]
-            }
-        });
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+   
 
-        const ctx2 = document.getElementById('tasks-bar-chart').getContext('2d');
-        new Chart(ctx2, {
-            type: 'bar',
-            data: {
-                labels: ['Revise Algebra', 'Do Laundry', 'Go to Gym 3'],
-                datasets: [{
-                    label: 'Progress',
-                    data: projectData.progress,
-                    backgroundColor: '#4CAF50',
-                    borderColor: '#4CAF50',
-                    borderWidth: 1,
-                }]
-            }
-        });
-
-        const menu = document.getElementById("mobile-menu");
-        const burgerButton = document.getElementById("burger-button");
-
-        burgerButton.addEventListener("click", function() {
-            menu.classList.toggle("hidden");
-        });
         const USER_ID = "{{ user_id|safe }}";
 
         let mediaRecorder;
         let audioChunks = [];
         let stream;
-        
+
         $('#startRecording').on('click', function () {
             navigator.mediaDevices.getUserMedia({ audio: true })
                 .then(function (userStream) {
                     stream = userStream;
                     mediaRecorder = new MediaRecorder(stream);
                     audioChunks = [];
-    
+
                     mediaRecorder.ondataavailable = function (event) {
                         audioChunks.push(event.data);
                     };
-    
+
                     mediaRecorder.onstop = function () {
                         let audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
                         let formData = new FormData();
@@ -290,7 +240,7 @@
                             .text('🎤 Listening...');
                         $('#chatBox').append(placeholder);
                         $('#chatBox').scrollTop($('#chatBox')[0].scrollHeight);
-                        
+
                         $.ajax({
                             url: '/transcribe/',  // Adjust this route if needed
                             type: 'POST',
@@ -328,7 +278,7 @@
                         const audioUrl = URL.createObjectURL(audioBlob);
                         $('#responseAudio').attr('src', audioUrl);
                     };
-    
+
                     mediaRecorder.start();
                     $('#startRecording').prop('disabled', true);
                     $('#stopRecording').prop('disabled', false);
@@ -338,7 +288,7 @@
                     console.log('Error accessing microphone:', error);
                 });
         });
-    
+
         $('#stopRecording').on('click', function () {
             if (mediaRecorder && mediaRecorder.state === "recording") {
                 mediaRecorder.stop();
@@ -348,7 +298,7 @@
                 console.log("✅ Recording stopped.");
             }
         });
-    
+
         function appendMessage(message, sender) {
             const chatBox = $('#chatBox');
             const messageElement = $('<div>')
@@ -357,14 +307,14 @@
             chatBox.append(messageElement);
             chatBox.scrollTop(chatBox[0].scrollHeight);
         }
-    
+
         $('#sendMessage').on('click', function () {
             const userMessage = $('#textMessage').val().trim();
             if (!userMessage) return;
-    
+
             appendMessage(userMessage, 'user');
             $('#textMessage').val('');
-    
+
             $.ajax({
                 url: '/predict/',
                 type: 'POST',
@@ -378,9 +328,9 @@
                 }
             });
         });
-        
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
 
-</body>
+    </script>
+
+
+</script>
 </html>
