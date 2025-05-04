@@ -1,4 +1,3 @@
-# vitalis-v2
 # VITALIS
 
 VITALIS is a Django-based web application designed to assist with patient interaction using LLM's models. It aims to streamline diagnosis support and prioritize patient care efficiently.
