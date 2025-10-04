@@ -1,7 +1,7 @@
 # VITALIS
 
 VITALIS is a Django-based web application designed to enhance patient–doctor interaction through artificial intelligence. It leverages Large Language Models (LLMs) to assist with medical diagnosis support, streamline communication, and improve the efficiency of patient care.
----
+
 
 ## Features
 
@@ -11,7 +11,6 @@ VITALIS is a Django-based web application designed to enhance patient–doctor i
 
 🗣️ Speech-to-text & text-to-speech – Integrated with ElevenLabs API for realistic voice interactions.
 
-🩺 Intelligent triage support – Helps prioritize patients based on reported symptoms and urgency.
 ---
 
 ## Tech Stack 👩‍💻
